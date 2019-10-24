@@ -15,5 +15,6 @@ functions:
          method: ANY
          cors: true
 plugins:
+  - serverless-bundle
   - serverless-offline
-  - serverless-mocha-plugin
+  

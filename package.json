@@ -4,13 +4,17 @@
   "description": "",
   "main": "handler.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "serverless offline start",
+    "deploy": "serverless deploy",
+    "test:once": "serverless-bundle test",
+    "test": "serverless-bundle test --watch"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "serverless-mocha-plugin": "^1.11.0",
+    "jest": "^24.9.0",
+    "serverless-bundle": "^1.2.5",
     "serverless-offline": "^5.12.0"
   }
 }

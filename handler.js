@@ -1,12 +1,12 @@
-'use strict';
+export const helloFn = (time = new Date().toTimeString()) => `Hello, the current time is ${time}.`
 
-module.exports.hello = (event, context, callback) => {
+export const hello = (event, context, callback) => {
   const response = {
     statusCode: 200,
     body: JSON.stringify({
-      message: `Hello, the current time is ${new Date().toTimeString()}.`,
-    }),
-  };
+      message: helloFn()
+    })
+  }
 
-  callback(null, response);
-};
+  callback(null, response)
+}
