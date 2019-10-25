@@ -1,7 +1,7 @@
 /* eslint-env jest */
-import * as handler from './handler'
+import { helloFn } from './hello'
 
 test('correct greeting is generated', () => {
-  expect(handler.helloFn('fixed'))
+  expect(helloFn('fixed'))
     .toBe('Hello, the current time is fixed.')
 })

@@ -1,12 +1,11 @@
-export const helloFn = (time = new Date().toTimeString()) => `Hello, the current time is ${time}.`
+import { helloFn } from './core/hello'
 
 export const hello = (event, context, callback) => {
-  const response = {
+  const message = helloFn()
+  callback(null, {
     statusCode: 200,
     body: JSON.stringify({
-      message: helloFn()
+      message
     })
-  }
-
-  callback(null, response)
+  })
 }
