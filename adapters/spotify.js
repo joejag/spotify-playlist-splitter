@@ -12,9 +12,22 @@ export const fetchPlaylist = (playlistId) => {
       function (data) {
         spotifyApi.setAccessToken(data.body.access_token)
 
-        spotifyApi.getPlaylist(playlistId).then(
-          function (data) {
-            resolve(data.body)
+        spotifyApi.getPlaylistTracks(playlistId, { limit: 100 }).then(
+          async function (data) {
+            const totalTracksOnPlaylist = data.body.total
+            if (totalTracksOnPlaylist <= 100) {
+              resolve(data.body)
+            } else {
+              const callsToMake = Math.ceil(totalTracksOnPlaylist / 100)
+              const offsets = [...Array(callsToMake).keys()].map((i) => (i * 100))
+
+              const allTracks = await Promise.all(offsets.map(async (offset) => {
+                return spotifyApi.getPlaylistTracks(playlistId, { limit: 100, offset: offset })
+              }))
+
+              const combinedTracks = allTracks.reduce((a, c) => a.concat(c.body.items), [])
+              resolve({ items: combinedTracks })
+            }
           },
           function (err) {
             reject(err, 'cannot get playlist')

@@ -4,7 +4,8 @@ import { frequencies } from './arrays'
 export const fetchPlaylistInformation = async (playlistId, callback) => {
   try {
     const rawPlaylist = await fetchPlaylist(playlistId)
-    const tracks = rawPlaylist.tracks.items.map((item) => {
+    console.log('playlist', rawPlaylist)
+    const tracks = rawPlaylist.items.map((item) => {
       return {
         artists: item.track.artists.map((i) => i.name),
         artistId: item.track.artists[0].id,
