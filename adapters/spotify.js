@@ -2,7 +2,7 @@ var SpotifyWebApi = require('spotify-web-api-node')
 
 var spotifyApi = new SpotifyWebApi({
   clientId: 'b899d386f8034b089f9b77e41515ec1d',
-  clientSecret: 'ASD'
+  clientSecret: process.env.SPOTIFY_CLIENT_SECRET
 })
 
 export const fetchPlaylist = (playlistId, callback) => {

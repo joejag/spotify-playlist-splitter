@@ -1,7 +1,12 @@
-import { go } from './core/spotify_splitter'
+import { fetchPlaylistInformation } from './core/spotify_splitter'
 
-export const hello = (event, context, callback) => {
-  go((err, res) => {
+export const playlistInfo = (event, context, callback) => {
+  if (!event || !event.pathParameters || !event.pathParameters.id) {
+    callback(null, { statusCode: 404, body: '' })
+    return
+  }
+
+  fetchPlaylistInformation(event.pathParameters.id, (err, res) => {
     if (err) {
       callback(null, {
         statusCode: 500,
@@ -13,9 +18,10 @@ export const hello = (event, context, callback) => {
     } else {
       callback(null, {
         statusCode: 200,
-        body: JSON.stringify({
-          message: res
-        })
+        body: JSON.stringify(
+          res.clean
+          // message: res
+        )
       })
     }
   })

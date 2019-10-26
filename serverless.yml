@@ -3,15 +3,17 @@ service: spotify-playlist-splitter
 provider:
   name: aws
   runtime: nodejs10.x
-  stage: prod           # Adapt to suit your staging strategy
-  region: eu-central-1  # The same as in Atlas
+  stage: prod
+  region: eu-west-2
+  environment: 
+    SPOTIFY_CLIENT_SECRET: ${ssm:SPOTIFY_CLIENT_SECRET~true}
 
 functions:
-  hello:
-    handler: handler.hello
+  playlistInfo:
+    handler: handler.playlistInfo
     events:
      - http:
-         path: /hello
+         path: /playlistInfo/{id}
          method: ANY
          cors: true
 
