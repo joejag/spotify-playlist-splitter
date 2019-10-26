@@ -6,26 +6,37 @@ var spotifyApi = new SpotifyWebApi({
   clientSecret: process.env.SPOTIFY_CLIENT_SECRET
 })
 
+const SPOTIFY_TRACKS_LIMIT = 100
+
+const fetchPaginatedPlaylist = async (connectedSpotifyApi, playlistId, totalTracksOnPlaylist) => {
+  const callsToMake = Math.ceil(totalTracksOnPlaylist / SPOTIFY_TRACKS_LIMIT)
+  const offsets = [...Array(callsToMake).keys()].map((i) => (i * SPOTIFY_TRACKS_LIMIT))
+
+  const allTracks = await Promise.all(offsets.map(async (offset) => {
+    return connectedSpotifyApi.getPlaylistTracks(playlistId,
+      {
+        limit: SPOTIFY_TRACKS_LIMIT,
+        offset: offset
+      })
+  }))
+
+  const combinedTracks = allTracks.reduce((a, c) => a.concat(c.body.items), [])
+  return combinedTracks
+}
+
 export const fetchPlaylist = (playlistId) => {
   return new Promise((resolve, reject) => {
     spotifyApi.clientCredentialsGrant().then(
       function (data) {
         spotifyApi.setAccessToken(data.body.access_token)
 
-        spotifyApi.getPlaylistTracks(playlistId, { limit: 100 }).then(
+        spotifyApi.getPlaylistTracks(playlistId, { limit: SPOTIFY_TRACKS_LIMIT }).then(
           async function (data) {
             const totalTracksOnPlaylist = data.body.total
-            if (totalTracksOnPlaylist <= 100) {
+            if (totalTracksOnPlaylist <= SPOTIFY_TRACKS_LIMIT) {
               resolve(data.body)
             } else {
-              const callsToMake = Math.ceil(totalTracksOnPlaylist / 100)
-              const offsets = [...Array(callsToMake).keys()].map((i) => (i * 100))
-
-              const allTracks = await Promise.all(offsets.map(async (offset) => {
-                return spotifyApi.getPlaylistTracks(playlistId, { limit: 100, offset: offset })
-              }))
-
-              const combinedTracks = allTracks.reduce((a, c) => a.concat(c.body.items), [])
+              const combinedTracks = await fetchPaginatedPlaylist(spotifyApi, playlistId, totalTracksOnPlaylist)
               resolve({ items: combinedTracks })
             }
           },
