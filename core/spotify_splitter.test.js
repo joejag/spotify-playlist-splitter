@@ -1,6 +1,6 @@
 /* eslint-env jest */
 import { fetchPlaylistInformation } from './spotify_splitter'
-import { fetchPlaylist } from '../adapters/spotify'
+import { fetchPlaylist, fetchArtists } from '../adapters/spotify'
 jest.mock('../adapters/spotify')
 
 // https://www.reddit.com/r/indieheads/comments/deja9p/pitchfork_the_200_best_songs_of_the_2010s/
@@ -36,14 +36,91 @@ export const simplePlaylist = {
   uri: 'spotify:playlist:4BcevT4vD6DfvR0bziEsry'
 }
 
+const artistsCannedResponse = {
+  artists:
+  [{
+    external_urls: { spotify: 'https://open.spotify.com/artist/6mKqFxGMS5TGDZI3XkT5Rt' },
+    followers: { href: null, total: 224704 },
+    genres: ['alternative americana', 'art pop', 'chamber pop', 'dream pop', 'electropop', 'folk-pop', 'freak folk', 'indie folk', 'indie pop', 'indie rock', 'modern rock'],
+    href: 'https://api.spotify.com/v1/artists/6mKqFxGMS5TGDZI3XkT5Rt',
+    id: '6mKqFxGMS5TGDZI3XkT5Rt',
+    images: [{ height: 640, url: 'https://i.scdn.co/image/18712a31eb800ec911d34a8f0bc758ddedaae3a9', width: 640 }, { height: 320, url: 'https://i.scdn.co/image/de1d6f3587157041234f4d9b30056e468d716653', width: 320 }, { height: 160, url: 'https://i.scdn.co/image/d6b507f6fc27fcc9962c4af5a99eaeea949db133', width: 160 }],
+    name: 'Angel Olsen',
+    popularity: 67,
+    type: 'artist',
+    uri: 'spotify:artist:6mKqFxGMS5TGDZI3XkT5Rt'
+  }, {
+    external_urls: { spotify: 'https://open.spotify.com/artist/5INjqkS1o8h1imAzPqGZBb' },
+    followers: { href: null, total: 2909141 },
+    genres: ['australian psych', 'neo-psychedelic', 'psychedelic rock'],
+    href: 'https://api.spotify.com/v1/artists/5INjqkS1o8h1imAzPqGZBb',
+    id: '5INjqkS1o8h1imAzPqGZBb',
+    images: [{ height: 640, url: 'https://i.scdn.co/image/d258f00c11f658bc5d3fbe0b5491200996836e86', width: 640 }, { height: 320, url: 'https://i.scdn.co/image/b3140c45c6dbd8cffd1929308985552d084adeb9', width: 320 }, { height: 160, url: 'https://i.scdn.co/image/3e9f73171c582eb9173b7e791625d3c17f7bca1b', width: 160 }],
+    name: 'Tame Impala',
+    popularity: 80,
+    type: 'artist',
+    uri: 'spotify:artist:5INjqkS1o8h1imAzPqGZBb'
+  }, {
+    external_urls: { spotify: 'https://open.spotify.com/artist/3TVXtAsR1Inumwj472S9r4' },
+    followers: { href: null, total: 41552229 },
+    genres: ['canadian hip hop', 'canadian pop', 'hip hop', 'pop rap', 'rap', 'toronto rap'],
+    href: 'https://api.spotify.com/v1/artists/3TVXtAsR1Inumwj472S9r4',
+    id: '3TVXtAsR1Inumwj472S9r4',
+    images: [{ height: 640, url: 'https://i.scdn.co/image/012ecd119617ac24ab56620ace4b81735b172686', width: 640 }, { height: 320, url: 'https://i.scdn.co/image/55e3fb26d67b4d71321440b3a440eecd9d8f20f7', width: 320 }, { height: 160, url: 'https://i.scdn.co/image/ad10179d5f27ba77c7d6c95abd6e26f6a227e0d5', width: 160 }],
+    name: 'Drake',
+    popularity: 97,
+    type: 'artist',
+    uri: 'spotify:artist:3TVXtAsR1Inumwj472S9r4'
+  }]
+}
+
 test('it maps fields across', async (done) => {
-  fetchPlaylist.mockImplementation((_, cb) => cb(null, simplePlaylist))
+  fetchPlaylist.mockImplementation((_) => Promise.resolve(simplePlaylist))
+  fetchArtists.mockImplementation((_) => Promise.resolve(artistsCannedResponse))
 
   fetchPlaylistInformation(simplePlaylist.id, (_, data) => {
     expect(data.clean).toStrictEqual([
-      { artists: ['Angel Olsen'], title: 'Shut Up Kiss Me', artistId: '6mKqFxGMS5TGDZI3XkT5Rt' },
-      { artists: ['Tame Impala'], title: 'Let It Happen', artistId: '5INjqkS1o8h1imAzPqGZBb' },
-      { artists: ['Drake'], title: "God's Plan", artistId: '3TVXtAsR1Inumwj472S9r4' }
+      {
+        artists: ['Angel Olsen'],
+        title: 'Shut Up Kiss Me',
+        artistId: '6mKqFxGMS5TGDZI3XkT5Rt',
+        genres: [
+          'alternative americana',
+          'art pop',
+          'chamber pop',
+          'dream pop',
+          'electropop',
+          'folk-pop',
+          'freak folk',
+          'indie folk',
+          'indie pop',
+          'indie rock',
+          'modern rock'
+        ]
+      },
+      {
+        artists: ['Tame Impala'],
+        title: 'Let It Happen',
+        artistId: '5INjqkS1o8h1imAzPqGZBb',
+        genres: [
+          'australian psych',
+          'neo-psychedelic',
+          'psychedelic rock'
+        ]
+      },
+      {
+        artists: ['Drake'],
+        title: "God's Plan",
+        artistId: '3TVXtAsR1Inumwj472S9r4',
+        genres: [
+          'canadian hip hop',
+          'canadian pop',
+          'hip hop',
+          'pop rap',
+          'rap',
+          'toronto rap'
+        ]
+      }
     ])
 
     done()

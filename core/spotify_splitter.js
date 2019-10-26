@@ -1,16 +1,25 @@
-import { fetchPlaylist } from '../adapters/spotify'
+import { fetchPlaylist, fetchArtists } from '../adapters/spotify'
 
-export const fetchPlaylistInformation = (playlistId, callback) => {
-  fetchPlaylist(playlistId, (err, rawPlaylist) => {
-    const results = rawPlaylist.tracks.items.map((item) => {
-      const title = item.track.name
+export const fetchPlaylistInformation = async (playlistId, callback) => {
+  try {
+    const rawPlaylist = await fetchPlaylist(playlistId)
+    const tracks = rawPlaylist.tracks.items.map((item) => {
       return {
         artists: item.track.artists.map((i) => i.name),
         artistId: item.track.artists[0].id,
-        title
+        title: item.track.name
       }
     })
 
-    callback(err, { clean: results, original: rawPlaylist })
-  })
+    const artistIds = tracks.map(t => t.artistId)
+    const artistInfo = await fetchArtists(artistIds)
+    const result = tracks.map(function (e, i) {
+      return { ...e, genres: artistInfo.artists[i].genres }
+    })
+
+    callback(null, { clean: result, original: rawPlaylist })
+  } catch (err) {
+    console.error('failed fetching playlist', err)
+    callback(err)
+  }
 }
