@@ -7,6 +7,8 @@ export const fetchPlaylistInformation = async (playlistId, callback) => {
       return {
         artists: item.track.artists.map((i) => i.name),
         artistId: item.track.artists[0].id,
+        trackId: item.track.id,
+        url: item.track.external_urls.spotify,
         title: item.track.name
       }
     })

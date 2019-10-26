@@ -74,7 +74,7 @@ const artistsCannedResponse = {
   }]
 }
 
-test('it maps fields across', async (done) => {
+test('it maps fields across and adds genre', async (done) => {
   fetchPlaylist.mockImplementation((_) => Promise.resolve(simplePlaylist))
   fetchArtists.mockImplementation((_) => Promise.resolve(artistsCannedResponse))
 
@@ -84,6 +84,8 @@ test('it maps fields across', async (done) => {
         artists: ['Angel Olsen'],
         title: 'Shut Up Kiss Me',
         artistId: '6mKqFxGMS5TGDZI3XkT5Rt',
+        trackId: '5uZLsGY9fknBd5Rxr7AIss',
+        url: 'https://open.spotify.com/track/5uZLsGY9fknBd5Rxr7AIss',
         genres: [
           'alternative americana',
           'art pop',
@@ -102,6 +104,8 @@ test('it maps fields across', async (done) => {
         artists: ['Tame Impala'],
         title: 'Let It Happen',
         artistId: '5INjqkS1o8h1imAzPqGZBb',
+        trackId: '2X485T9Z5Ly0xyaghN73ed',
+        url: 'https://open.spotify.com/track/2X485T9Z5Ly0xyaghN73ed',
         genres: [
           'australian psych',
           'neo-psychedelic',
@@ -112,6 +116,8 @@ test('it maps fields across', async (done) => {
         artists: ['Drake'],
         title: "God's Plan",
         artistId: '3TVXtAsR1Inumwj472S9r4',
+        trackId: '6DCZcSspjsKoFjzjrWoCdn',
+        url: 'https://open.spotify.com/track/6DCZcSspjsKoFjzjrWoCdn',
         genres: [
           'canadian hip hop',
           'canadian pop',
