@@ -16,10 +16,10 @@ functions:
          cors: true
 
 custom:
-  bundle:
+  webpack:
     linting: false
 
 plugins:
-  - serverless-bundle
+  - serverless-webpack
   - serverless-offline
   
