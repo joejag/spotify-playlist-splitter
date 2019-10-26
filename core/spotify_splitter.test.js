@@ -79,7 +79,7 @@ test('it maps fields across and adds genre', async (done) => {
   fetchArtists.mockImplementation((_) => Promise.resolve(artistsCannedResponse))
 
   fetchPlaylistInformation(simplePlaylist.id, (_, data) => {
-    expect(data.clean).toStrictEqual([
+    expect(data.tracks).toStrictEqual([
       {
         artists: ['Angel Olsen'],
         title: 'Shut Up Kiss Me',
@@ -128,7 +128,28 @@ test('it maps fields across and adds genre', async (done) => {
         ]
       }
     ])
+    done()
+  })
+})
 
+test('genre stats are calculated', (done) => {
+  fetchPlaylist.mockImplementation((_) => Promise.resolve(simplePlaylist))
+  fetchArtists.mockImplementation((_) => Promise.resolve({
+    artists:
+    [
+      { genres: ['rap'] },
+      { genres: ['rap', 'r&b'] },
+      { genres: ['rap', 'r&b', 'rock'] }
+    ]
+  }))
+
+  fetchPlaylistInformation(simplePlaylist.id, (_, data) => {
+    expect(data.genres).toStrictEqual({
+      rap: 3,
+      'r&b': 2,
+      rock: 1
+    }
+    )
     done()
   })
 })

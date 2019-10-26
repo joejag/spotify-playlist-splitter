@@ -1,4 +1,5 @@
 import { fetchPlaylist, fetchArtists } from '../adapters/spotify'
+import { frequencies } from './arrays'
 
 export const fetchPlaylistInformation = async (playlistId, callback) => {
   try {
@@ -13,13 +14,14 @@ export const fetchPlaylistInformation = async (playlistId, callback) => {
       }
     })
 
-    const artistIds = tracks.map(t => t.artistId)
-    const artistInfo = await fetchArtists(artistIds)
-    const result = tracks.map(function (e, i) {
-      return { ...e, genres: artistInfo.artists[i].genres }
+    const artistInfo = await fetchArtists(tracks.map(t => t.artistId))
+    const tracksWithGenre = tracks.map((track, i) => {
+      return { ...track, genres: artistInfo.artists[i].genres }
     })
 
-    callback(null, { clean: result, original: rawPlaylist })
+    const genreFrequencies = frequencies(artistInfo.artists.reduce((a, c) => a.concat(c.genres), []))
+
+    callback(null, { tracks: tracksWithGenre, genres: genreFrequencies })
   } catch (err) {
     console.error('failed fetching playlist', err)
     callback(err)

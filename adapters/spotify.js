@@ -1,4 +1,5 @@
-var SpotifyWebApi = require('spotify-web-api-node')
+import SpotifyWebApi from 'spotify-web-api-node'
+import { chunk } from '../core/arrays'
 
 var spotifyApi = new SpotifyWebApi({
   clientId: 'b899d386f8034b089f9b77e41515ec1d',
@@ -25,16 +26,6 @@ export const fetchPlaylist = (playlistId) => {
       }
     )
   })
-}
-
-function chunk (array, size) {
-  const chunkedArray = []
-  let index = 0
-  while (index < array.length) {
-    chunkedArray.push(array.slice(index, size + index))
-    index += size
-  }
-  return chunkedArray
 }
 
 const SPOTIFY_LOOKUP_LIMIT = 50
