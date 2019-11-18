@@ -4,7 +4,7 @@
   "description": "",
   "main": "handler.js",
   "scripts": {
-    "start": "serverless offline start",
+    "start": "serverless offline start --port 4000",
     "deploy": "serverless deploy",
     "test:once": "serverless-bundle test",
     "test": "serverless-bundle test --watch"
